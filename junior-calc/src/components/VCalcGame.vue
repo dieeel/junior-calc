@@ -1,23 +1,33 @@
+<script setup lang="ts">
+import { ref } from 'vue';
+
+const inGame = ref(false)
+
+const gameStart = ():void => {
+    inGame.value = true
+}
+</script>
+
 <template>
     <div class="container">
         <div class="title">
             <h1>けいさん</h1>
             <div class="marker"></div>
         </div>
-    <button class="startButton mb-20">スタート</button>
-    <div class="quession mb-20">aaa</div>
-    <div class="clear">がんばったね</div>
-    <div class="typeFormWrapper mb-20">
-        <input type="text" class="typeForm">
-    </div>
+        <button v-if="inGame!=true" class="startButton mb-20" @click="gameStart">スタート</button>
+        <div v-if="inGame">
+            <div class="quession mb-20">aaa</div>
+            <div class="clear">がんばったね</div>
+            <div class="typeFormWrapper mb-20">
+                <input type="text" class="typeForm">
+            </div>
 
-    <div class="gaugeWrapper mb-20">
-        <div class="gauge"></div>
-    </div>
+            <div class="gaugeWrapper mb-20">
+                <div class="gauge"></div>
+            </div>
 
-    <div>1/5</div>
-
-
+            <div>1/5</div>
+        </div>
     </div>
 </template>
 
