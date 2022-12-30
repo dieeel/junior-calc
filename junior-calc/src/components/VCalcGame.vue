@@ -43,7 +43,7 @@ watch(typeBox, (typeString) => {
         <button v-if="inGame!=true" class="startButton mb-20" @click="gameStart">スタート</button>
         <div v-if="inGame">
             <div class="quession mb-20">{{ currentQuestion }}</div>
-            <div class="clear">がんばったね</div>
+            <div v-if="currentQuestionCount == allQuestionCount" class="clear">おめでとう！</div>
             <div class="typeFormWrapper mb-20">
                 <input v-model="typeBox" type="text" class="typeForm">
             </div>
