@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import type { Ref } from 'vue';
 
-const inGame = ref(false)
+const inGame:Ref<boolean> = ref(false)
 
 const gameStart = ():void => {
     inGame.value = true
