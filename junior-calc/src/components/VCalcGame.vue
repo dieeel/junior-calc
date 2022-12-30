@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import type{ Ref } from 'vue';
 
 const inGame:Ref<boolean> = ref(false);
@@ -9,6 +9,7 @@ let questions:string[] = [
     'banana',
     'donut'
 ]
+const typeBox:Ref<string> = ref('')
 
 const gameStart = ():void => {
     inGame.value = true
@@ -17,6 +18,14 @@ const gameStart = ():void => {
 onMounted(() => {
     currentQuestion = questions[0]
 });
+
+watch(typeBox, (typeString) => {
+    if(typeString == currentQuestion){
+        questions.splice(0, 1)
+        currentQuestion = questions[0]
+        typeBox.value = ''
+    }
+})
 
 </script>
 
@@ -31,7 +40,7 @@ onMounted(() => {
             <div class="quession mb-20">{{ currentQuestion }}</div>
             <div class="clear">がんばったね</div>
             <div class="typeFormWrapper mb-20">
-                <input type="text" class="typeForm">
+                <input v-model="typeBox" type="text" class="typeForm">
             </div>
 
             <div class="gaugeWrapper mb-20">
