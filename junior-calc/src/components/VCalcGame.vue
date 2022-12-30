@@ -1,12 +1,23 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import type { Ref } from 'vue';
+import { ref, onMounted } from 'vue';
+import type{ Ref } from 'vue';
 
-const inGame:Ref<boolean> = ref(false)
+const inGame:Ref<boolean> = ref(false);
+let currentQuestion:string = ''
+let questions:string[] = [
+    'apple',
+    'banana',
+    'donut'
+]
 
 const gameStart = ():void => {
     inGame.value = true
 }
+
+onMounted(() => {
+    currentQuestion = questions[0]
+});
+
 </script>
 
 <template>
@@ -17,7 +28,7 @@ const gameStart = ():void => {
         </div>
         <button v-if="inGame!=true" class="startButton mb-20" @click="gameStart">スタート</button>
         <div v-if="inGame">
-            <div class="quession mb-20">aaa</div>
+            <div class="quession mb-20">{{ currentQuestion }}</div>
             <div class="clear">がんばったね</div>
             <div class="typeFormWrapper mb-20">
                 <input type="text" class="typeForm">
