@@ -15,8 +15,12 @@ const gameStart = ():void => {
     inGame.value = true
 }
 
+let currentQuestionCount: number = 0
+let allQuestionCount: number = 0
+
 onMounted(() => {
     currentQuestion = questions[0]
+    allQuestionCount = questions.length
 });
 
 watch(typeBox, (typeString) => {
@@ -24,6 +28,7 @@ watch(typeBox, (typeString) => {
         questions.splice(0, 1)
         currentQuestion = questions[0]
         typeBox.value = ''
+        currentQuestionCount++
     }
 })
 
@@ -47,7 +52,7 @@ watch(typeBox, (typeString) => {
                 <div class="gauge"></div>
             </div>
 
-            <div>1/5</div>
+            <div>{{ currentQuestionCount }}/{{ allQuestionCount }}</div>
         </div>
     </div>
 </template>
