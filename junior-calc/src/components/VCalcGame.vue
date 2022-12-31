@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, computed, watch, nextTick } from 'vue';
 import type{ Ref } from 'vue';
 
 const inGame:Ref<boolean> = ref(false);
@@ -12,23 +12,42 @@ let questions:string[] = [
 const typeBox:Ref<string> = ref('')
 
 const gameStart = ():void => {
-    inGame.value = true
+    inGame.value = true;
+    nextTick(() => {
+        document.getElementById('typeForm').focus()
+    })
 }
 
-let currentQuestionCount: number = 0
-let allQuestionCount: number = 0
+const currentQuestionCount = ref(0)
+const allQuestionCount = ref(0)
 
 onMounted(() => {
     currentQuestion = questions[0]
-    allQuestionCount = questions.length
+    allQuestionCount.value = questions.length
 });
+
+var styleObject = computed(() => {
+    var width = currentQuestionCount.value / allQuestionCount.value * 100 + "%"
+    if(currentQuestionCount.value == allQuestionCount.value){
+        var color = "#03a9f4"
+    }else{
+        var color = "orange"
+    }
+
+    return{
+        'currentQuestionCount': currentQuestionCount.value,
+        'allQuestionCount': allQuestionCount.value,
+        'width': width,
+        'background-color': color
+    }
+    })
 
 watch(typeBox, (typeString) => {
     if(typeString == currentQuestion){
         questions.splice(0, 1)
         currentQuestion = questions[0]
         typeBox.value = ''
-        currentQuestionCount++
+        currentQuestionCount.value++
     }
 })
 
@@ -45,11 +64,11 @@ watch(typeBox, (typeString) => {
             <div class="quession mb-20">{{ currentQuestion }}</div>
             <div v-if="currentQuestionCount == allQuestionCount" class="clear">おめでとう！</div>
             <div class="typeFormWrapper mb-20">
-                <input v-model="typeBox" type="text" class="typeForm">
+                <input id="typeForm" v-model="typeBox" type="text" class="typeForm">
             </div>
 
             <div class="gaugeWrapper mb-20">
-                <div class="gauge"></div>
+                <div v-bind:style="styleObject" class="gauge"></div>
             </div>
 
             <div>{{ currentQuestionCount }}/{{ allQuestionCount }}</div>
@@ -112,6 +131,7 @@ watch(typeBox, (typeString) => {
 
 .gauge{
     height: 12px;
+    transition: all 0.3s ease;
 }
 
 .gaugeWrapper{
