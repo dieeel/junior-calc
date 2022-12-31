@@ -72,7 +72,8 @@ const appendQuestions = (): void => {
     if(checkPlusTwo.value){ concatQuestions(plusTwo) }
     if(checkMinusOne.value){ concatQuestions(minusOne) }
     if(checkMinusTwo.value){ concatQuestions(minusTwo) }
-    if(checkAllRandom){
+    if(checkAllRandom.value){
+        console.log("all random")
         questions = shuffle(questions)
     }
 }
@@ -81,11 +82,19 @@ const gameStart = ():void => {
     appendQuestions()
     currentQuestion = questions[0]
     allQuestionCount.value = questions.length
+    startTime = Date.now()
     inGame.value = true;
     nextTick(() => {
         document.getElementById('typeForm').focus()
     })
 }
+
+const resetGame = ():void => {
+    inGame.value = false;
+    endGame.value = false;
+    currentQuestionCount.value = 0;
+}
+
 
 const getDiffTime = (timeFrom: number, timeTo: number): string => {
     let diffTime = Math.floor((timeTo - timeFrom) / 1000)
@@ -134,7 +143,8 @@ watch(typeBox, (typeString) => {
             <h1>けいさん</h1>
             <div class="marker"></div>
         </div>
-        <button v-if="inGame!=true" class="startButton mb-20" @click="gameStart">スタート</button>
+        <button v-if="inGame!=true" class="startButton commonButton mb-20" @click="gameStart">スタート</button>
+        <button v-if="endGame" class="endButton commonButton mb-20" @click="resetGame">もういっかい</button>
         <div v-if="inGame!=true" class="checkItems">
             <input v-model="checkPlusOne" type="checkbox" />たしざん１<br>
             <input v-model="checkPlusTwo" type="checkbox" />たしざん２<br>
@@ -144,11 +154,12 @@ watch(typeBox, (typeString) => {
             <input v-model="checkAllRandom" type="checkbox" />ぜんぶまぜまぜ<br>
         </div>
         <div v-if="inGame">
+            <button v-if="endGame!=true" class="endButton commonButton mb-20" @click="resetGame">やめる</button>
             <div class="quession mb-20">{{ currentQuestion }}</div>
             <div v-if="currentQuestionCount == allQuestionCount" class="clear">おめでとう！</div>
             <div v-if="currentQuestionCount == allQuestionCount" class="clear">{{ endTime }}</div>
-            <div class="typeFormWrapper mb-20">
-                <input id="typeForm" v-model="typeBox" type="text" class="typeForm">
+            <div v-if="endGame!=true" class="typeFormWrapper mb-20">
+                <input id="typeForm" v-model="typeBox" type="number" class="typeForm">
             </div>
 
             <div class="gaugeWrapper mb-20">
@@ -162,18 +173,18 @@ watch(typeBox, (typeString) => {
 
 <style>
 .container{
-    width: 400px;
+    width: 300px;
     margin: 0 auto;
     text-align: center;
 }
 
 .mb-20{
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
 .title{
     position: relative;
-    font-size: 48px;
+    font-size: 24px;
 }
 
 .marker{
@@ -185,14 +196,22 @@ watch(typeBox, (typeString) => {
     z-index: -1;
 }
 
-.startButton{
-    background-color: #333;
-    color: #fff;
+.commonButton{
     padding: 4px 60px;
     border: none;
     outline: none;
     border-radius: 8px;
     cursor: pointer;
+}
+
+.startButton{
+    background-color: #333;
+    color: #fff;
+}
+
+.endButton{
+    background-color: yellowgreen;
+    color: #fff;
 }
 
 .quession{
@@ -224,7 +243,7 @@ watch(typeBox, (typeString) => {
 }
 
 .checkItems{
-    font-size: 18px;
+    font-size: 14px;
 }
 
 .debugStr{
