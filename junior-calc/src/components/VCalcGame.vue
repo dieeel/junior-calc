@@ -5,25 +5,87 @@ import type{ Ref } from 'vue';
 const inGame:Ref<boolean> = ref(false);
 const endGame:Ref<boolean> = ref(false);
 
+const checkPlusOne = ref(true)
+const checkPlusTwo = ref(false)
+const checkMinusOne = ref(false)
+const checkMinusTwo = ref(false)
+const checkEachRandom = ref(false)
+const checkAllRandom = ref(false)
+
 let currentQuestion:string = ''
-let questions:string[] = [
-    '3+3',
-    '3+1',
-    '9+8'
-]
+let questions:string[] = []
+
+let plusOne: string[] = []
+let plusTwo: string[] = []
+let minusOne: string[] = []
+let minusTwo: string[] = []
+
 const typeBox:Ref<string> = ref('');
 let startTime: number = Date.now()
 let endTime: string = ""
 
+const currentQuestionCount = ref(0)
+const allQuestionCount = ref(0)
+
+const createQuestions = (): void => {
+    for(let i=0; i<20; i++){
+        for(let j=1; j<10; j++){
+            if(i>=11){
+                if((i-j) < 10){
+                    minusTwo.push(i + "-" + j)
+                }
+            } else if(i==10){
+                continue
+            } else {
+                if((i+j) > 10){
+                    plusTwo.push(i + "+" + j)
+                } else {
+                    plusOne.push(i + "+" + j)
+                    if(i>=j){
+                        minusOne.push(i + "-" + j)
+                    }
+                }
+            }
+        }
+    }
+}
+
+const shuffle = ([...array]) => {
+  for (let i = array.length - 1; i >= 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
+const concatQuestions = (tmpQuestions: string[]): void => {
+    let tmpQ = [...tmpQuestions].slice(0, 5)
+    if(checkEachRandom.value){
+        tmpQ = shuffle(tmpQ)
+    }
+    questions = questions.concat(tmpQ)
+}
+
+const appendQuestions = (): void => {
+    questions = []
+    if(checkPlusOne.value){ concatQuestions(plusOne) }
+    if(checkPlusTwo.value){ concatQuestions(plusTwo) }
+    if(checkMinusOne.value){ concatQuestions(minusOne) }
+    if(checkMinusTwo.value){ concatQuestions(minusTwo) }
+    if(checkAllRandom){
+        questions = shuffle(questions)
+    }
+}
+
 const gameStart = ():void => {
+    appendQuestions()
+    currentQuestion = questions[0]
+    allQuestionCount.value = questions.length
     inGame.value = true;
     nextTick(() => {
         document.getElementById('typeForm').focus()
     })
 }
-
-const currentQuestionCount = ref(0)
-const allQuestionCount = ref(0)
 
 const getDiffTime = (timeFrom: number, timeTo: number): string => {
     let diffTime = Math.floor((timeTo - timeFrom) / 1000)
@@ -33,8 +95,7 @@ const getDiffTime = (timeFrom: number, timeTo: number): string => {
 }
 
 onMounted(() => {
-    currentQuestion = questions[0]
-    allQuestionCount.value = questions.length
+    createQuestions()
 });
 
 var styleObject = computed(() => {
@@ -74,6 +135,14 @@ watch(typeBox, (typeString) => {
             <div class="marker"></div>
         </div>
         <button v-if="inGame!=true" class="startButton mb-20" @click="gameStart">スタート</button>
+        <div v-if="inGame!=true" class="checkItems">
+            <input v-model="checkPlusOne" type="checkbox" />たしざん１<br>
+            <input v-model="checkPlusTwo" type="checkbox" />たしざん２<br>
+            <input v-model="checkMinusOne" type="checkbox" />ひきざん１<br>
+            <input v-model="checkMinusTwo" type="checkbox" />ひきざん２<br>
+            <input v-model="checkEachRandom" type="checkbox" />それぞれまぜまぜ<br>
+            <input v-model="checkAllRandom" type="checkbox" />ぜんぶまぜまぜ<br>
+        </div>
         <div v-if="inGame">
             <div class="quession mb-20">{{ currentQuestion }}</div>
             <div v-if="currentQuestionCount == allQuestionCount" class="clear">おめでとう！</div>
@@ -152,6 +221,10 @@ watch(typeBox, (typeString) => {
 .gaugeWrapper{
     border: 1px solid;
     height: 12px;
+}
+
+.checkItems{
+    font-size: 18px;
 }
 
 .debugStr{
