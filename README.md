@@ -17,7 +17,7 @@ npm run build
 ## aws publish
 
 ```
-aws s3 sync --exact-timestamps --delete s3://<path> ./dist
+aws s3 sync --exact-timestamps --delete ./dist s3://<path>
 ```
 
 
