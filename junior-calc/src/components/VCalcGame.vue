@@ -159,7 +159,7 @@ watch(typeBox, (typeString) => {
             <div v-if="currentQuestionCount == allQuestionCount" class="clear">おめでとう！</div>
             <div v-if="currentQuestionCount == allQuestionCount" class="clear">{{ endTime }}</div>
             <div v-if="endGame!=true" class="typeFormWrapper mb-20">
-                <input id="typeForm" v-model="typeBox" type="number" class="typeForm">
+                <input id="typeForm" v-model="typeBox" type="number" pattern="\d*" class="typeForm">
             </div>
 
             <div class="gaugeWrapper mb-20">
