@@ -5,9 +5,9 @@ import type{ Ref } from 'vue';
 const inGame:Ref<boolean> = ref(false);
 let currentQuestion:string = ''
 let questions:string[] = [
-    'apple',
-    'banana',
-    'donut'
+    '3+3',
+    '3+1',
+    '9+8'
 ]
 const typeBox:Ref<string> = ref('')
 
@@ -43,7 +43,7 @@ var styleObject = computed(() => {
     })
 
 watch(typeBox, (typeString) => {
-    if(typeString == currentQuestion){
+    if(typeString == eval(currentQuestion)){
         questions.splice(0, 1)
         currentQuestion = questions[0]
         typeBox.value = ''
