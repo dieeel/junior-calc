@@ -3,13 +3,17 @@ import { ref, onMounted, computed, watch, nextTick } from 'vue';
 import type{ Ref } from 'vue';
 
 const inGame:Ref<boolean> = ref(false);
+const endGame:Ref<boolean> = ref(false);
+
 let currentQuestion:string = ''
 let questions:string[] = [
     '3+3',
     '3+1',
     '9+8'
 ]
-const typeBox:Ref<string> = ref('')
+const typeBox:Ref<string> = ref('');
+let startTime: number = Date.now()
+let endTime: string = ""
 
 const gameStart = ():void => {
     inGame.value = true;
@@ -20,6 +24,13 @@ const gameStart = ():void => {
 
 const currentQuestionCount = ref(0)
 const allQuestionCount = ref(0)
+
+const getDiffTime = (timeFrom: number, timeTo: number): string => {
+    let diffTime = Math.floor((timeTo - timeFrom) / 1000)
+    let sec = ('00' + (diffTime % 60)).slice(-2)
+    let minutes = ('00' + Math.floor(diffTime / 60)).slice(-2)
+    return minutes + ":" + sec
+}
 
 onMounted(() => {
     currentQuestion = questions[0]
@@ -48,9 +59,12 @@ watch(typeBox, (typeString) => {
         currentQuestion = questions[0]
         typeBox.value = ''
         currentQuestionCount.value++
+        if(currentQuestionCount.value == allQuestionCount.value){
+            endTime = getDiffTime(startTime, Date.now())
+            endGame.value = true
+        }
     }
 })
-
 </script>
 
 <template>
@@ -63,6 +77,7 @@ watch(typeBox, (typeString) => {
         <div v-if="inGame">
             <div class="quession mb-20">{{ currentQuestion }}</div>
             <div v-if="currentQuestionCount == allQuestionCount" class="clear">おめでとう！</div>
+            <div v-if="currentQuestionCount == allQuestionCount" class="clear">{{ endTime }}</div>
             <div class="typeFormWrapper mb-20">
                 <input id="typeForm" v-model="typeBox" type="text" class="typeForm">
             </div>
@@ -139,4 +154,7 @@ watch(typeBox, (typeString) => {
     height: 12px;
 }
 
+.debugStr{
+    font-size: 12px;
+}
 </style>
