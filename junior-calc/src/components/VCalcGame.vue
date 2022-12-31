@@ -59,7 +59,7 @@ const shuffle = ([...array]) => {
 }
 
 const concatQuestions = (tmpQuestions: string[]): void => {
-    let tmpQ = [...tmpQuestions].slice(0, 5)
+    let tmpQ = [...tmpQuestions]
     if(checkEachRandom.value){
         tmpQ = shuffle(tmpQ)
     }
