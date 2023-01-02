@@ -22,7 +22,7 @@ junior-calc $ npm create vite@4.0.0
 ✔ Select a framework: › Vue
 ✔ Select a variant: › TypeScript
 
-Scaffolding project in /Users/takaakinakazawa/gitrepo/own/junior-calc/junior-calc...
+Scaffolding project in <path>/junior-calc/junior-calc...
 
 Done. Now run:
 
